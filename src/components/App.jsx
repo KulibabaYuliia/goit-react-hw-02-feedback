@@ -1,34 +1,64 @@
-import { Profile } from './Profile/Profile';
-import user from '../data/user.json';
-
+import { FeedbackOptions } from './FeedbackOptions/FeedbackOptions';
 import { Statistics } from './Statistics/Statistics';
-import data from '../data/data.json';
+import { Section } from './Section/Section';
 
-import { FriendList } from './FriendList/FriendList';
-import friends from '../data/friends.json';
+import React, { Component } from 'react';
 
-import { TransactionHistory } from './TransactionHistory/TransactionHistory';
-import transactions from '../data/transactions.json';
+export class App extends Component {
+  state = {
+    good: 0,
+    neutral: 0,
+    bad: 0,
+  };
 
-export const App = () => (
-  <div
-    style={{
-      padding: '20px',
-      color: '#010101',
-    }}
-  >
-    <Profile
-      username={user.username}
-      tag={user.tag}
-      location={user.location}
-      avatar={user.avatar}
-      stats={user.stats}
-    />
+  feedbankAmountHandler = option => {
+    this.setState(prevState => {
+      return {
+        [option]: prevState[option] + 1,
+      };
+    });
+  };
 
-    <Statistics title="Upload stats" stats={data} />
+  countTotalFeedback = () => {
+    return this.state.good + this.state.neutral + this.state.bad;
+  };
 
-    <FriendList friends={friends} />
+  countPositiveFeedbackPercentage = () => {
+    return Math.round((this.state.good / this.countTotalFeedback()) * 100);
+  };
 
-    <TransactionHistory items={transactions} />
-  </div>
-);
+  render() {
+    const { good, neutral, bad } = this.state;
+
+    return (
+      <div
+        style={{
+          padding: '20px',
+          color: '#010101',
+        }}
+      >
+        <Section title="Please leave feedback">
+          <FeedbackOptions
+            onLeaveFeedback={this.feedbankAmountHandler}
+            options={Object.keys(this.state)}
+          />
+        </Section>
+        <Section
+          title={
+            this.countTotalFeedback() === 0
+              ? 'There is no feedback'
+              : 'Statistics'
+          }
+        >
+          <Statistics
+            goodCount={good}
+            neutralCount={neutral}
+            badCount={bad}
+            total={this.countTotalFeedback}
+            positivePerc={this.countPositiveFeedbackPercentage}
+          />
+        </Section>
+      </div>
+    );
+  }
+}

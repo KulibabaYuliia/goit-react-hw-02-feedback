@@ -1,30 +1,19 @@
-import {
-  StatisticsWrapper,
-  UploadStatsList,
-  UploadStatsItem,
-  UploadStatsItemLabel,
-  UploadStatsItemAmount,
-} from './Statistics.styled';
+import { StatisticsList } from './Statistics.styled';
 
-export const Statistics = ({ title, stats }) => {
+export const Statistics = ({
+  goodCount,
+  neutralCount,
+  badCount,
+  total,
+  positivePerc,
+}) => {
   return (
-    <StatisticsWrapper>
-      {title && <h2>{title}</h2>}
-
-      <UploadStatsList>
-        {stats.map(stat => {
-          // const bgColor = getRandomHexColor();
-
-          return (
-            <UploadStatsItem key={stat.id}>
-              <UploadStatsItemLabel>{stat.label}</UploadStatsItemLabel>
-              <UploadStatsItemAmount className="fff">
-                {stat.percentage}
-              </UploadStatsItemAmount>
-            </UploadStatsItem>
-          );
-        })}
-      </UploadStatsList>
-    </StatisticsWrapper>
+    <StatisticsList>
+      <li>Good: {goodCount}</li>
+      <li>Neutral: {neutralCount}</li>
+      <li>Bad: {badCount}</li>
+      <li>Total: {total()}</li>
+      <li>Posivive feedback: {positivePerc() || 0}%</li>
+    </StatisticsList>
   );
 };
